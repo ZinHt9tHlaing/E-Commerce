@@ -1,8 +1,20 @@
+// src/routes/auth.ts
 import express from "express";
 
+import { getUserInfo, login, register } from "../controller/userController";
+
+import {
+  loginValidator,
+  registerValidator,
+} from "../validators/userValidators";
+import { protect } from "../middlewares/authMiddleware";
+import { validateRequest } from "../middlewares/validateRequest";
 
 const router = express.Router();
 
-// router.get("/test", checkMiddleware, testController);
+router.post("/register", registerValidator, validateRequest, register);
+router.post("/login", loginValidator, validateRequest, login);
+
+router.get("/profile", protect, getUserInfo);
 
 export default router;

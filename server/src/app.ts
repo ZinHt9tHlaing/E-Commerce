@@ -8,7 +8,8 @@ import cors from "cors";
 import "dotenv/config";
 
 // routes imports
-import routes from "./routes/routeIndex";
+import authRoute from "./routes/authRoute";
+import productRoute from "./routes/productRoute";
 
 export const app: Application = express();
 
@@ -29,7 +30,8 @@ app
   .use(compression());
 
 // routes
-app.use(routes);
+app.use("/api/user", authRoute);
+app.use("/api/product", productRoute);
 
 app.use((error: any, req: Request, res: Response, next: NextFunction) => {
   const status = error.status || 500;
