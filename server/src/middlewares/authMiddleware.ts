@@ -1,27 +1,36 @@
-import { NextFunction, Request, Response } from "express";
-
+import { NextFunction, Response } from "express";
+import "dotenv/config";
 import jwt from "jsonwebtoken";
 import { User } from "../models/User";
-import { Types } from "mongoose";
 import { CustomRequest, UserTypes } from "../types/customRequest";
+import { Types } from "mongoose";
+import { createError } from "../utils/error";
+import { errorCode } from "../config/errorCode";
 
 export const protect = async (
   req: CustomRequest,
   res: Response,
   next: NextFunction
 ) => {
-  const token = req.cookies.jwt;
+  const token = req.cookies ? req.cookies.token : null;
 
   if (!token) {
-    return res.status(401).json({ message: "Not authorized" });
+    return next(
+      createError(
+        "You are not a authenticated user.",
+        401,
+        errorCode.unauthenticated
+      )
+    );
   }
 
   try {
     const decoded = jwt.verify(token, process.env.JWT_SECRET!) as {
-      id: string;
+      _id: string | Types.ObjectId;
+      email: string;
     };
 
-    const user = (await User.findById(decoded.id).select(
+    const user = (await User.findById(decoded._id).select(
       "-password"
     )) as UserTypes;
 
@@ -29,10 +38,20 @@ export const protect = async (
       return res.status(401).json({ message: "User not found" });
     }
 
+    if (user.email !== decoded.email) {
+      return next(
+        createError(
+          "You are not a authenticated user.",
+          401,
+          errorCode.unauthenticated
+        )
+      );
+    }
+
     req.user = user;
     next();
-  } catch (error) {
-    console.log("error", error);
+  } catch (error: any) {
+    console.error("JWT Verification Error:", error.message);
     return res.status(401).json({ message: "Invalid token" });
   }
 };

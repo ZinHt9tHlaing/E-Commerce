@@ -10,9 +10,10 @@ export const register = async (
   res: Response,
   next: NextFunction
 ) => {
-  const { name, email, password } = req.body;
+  const { name, email, password, phone, address } = req.body;
 
   const userExists = await User.findOne({ email });
+
   if (userExists) {
     return next(
       createError(
@@ -23,12 +24,13 @@ export const register = async (
     );
   }
 
-  const newUser = await User.create({ name, email, password });
+  const newUser = await User.create({ name, email, password, phone, address });
+  const safeUser = await User.findById(newUser._id).select("-password");
+
   res.status(201).json({
-    _id: newUser._id,
-    name: newUser.name,
-    email: newUser.email,
-    role: newUser.role,
+    success: true,
+    message: "User created successfully",
+    safeUser,
   });
 };
 
@@ -56,10 +58,12 @@ export const login = async (
     return next(createError("Invalid credentials!", 401, errorCode.NotFound));
   }
 
-  generateToken(res, existingUser._id);
+  generateToken(res, existingUser._id, existingUser.email);
 
-  res.status(201).json({
-    _id: existingUser._id,
+  res.status(200).json({
+    success: true,
+    message: "User logged in successfully",
+    userId: existingUser._id,
   });
 };
 

@@ -7,7 +7,7 @@ import {
   loginValidator,
   registerValidator,
 } from "../validators/userValidators";
-import { protect } from "../middlewares/authMiddleware";
+import { isAdmin, protect } from "../middlewares/authMiddleware";
 import { validateRequest } from "../middlewares/validateRequest";
 
 const router = express.Router();
@@ -15,6 +15,6 @@ const router = express.Router();
 router.post("/register", registerValidator, validateRequest, register);
 router.post("/login", loginValidator, validateRequest, login);
 
-router.get("/profile", protect, getUserInfo);
+router.get("/profile", protect, isAdmin, getUserInfo);
 
 export default router;

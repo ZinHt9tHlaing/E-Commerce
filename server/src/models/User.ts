@@ -1,20 +1,46 @@
-import mongoose, { CallbackWithoutResultAndOptionalError } from "mongoose";
+import mongoose from "mongoose";
 import bcrypt from "bcrypt";
 
 export interface IUser extends Document {
   name: string;
   email: string;
   password: string;
+  phone: string;
+  address: string;
+  answer: string;
   role: "user" | "admin";
   comparePassword: (enteredPassword: string) => Promise<boolean>;
 }
 
 const userSchema = new mongoose.Schema<IUser>(
   {
-    name: { type: String, required: true },
-    email: { type: String, required: true, unique: true },
-    password: { type: String },
-    role: { type: String, enum: ["user", "admin"], default: "user" },
+    name: {
+      type: String,
+      required: true,
+      trim: true,
+    },
+    email: {
+      type: String,
+      required: true,
+      unique: true,
+    },
+    password: {
+      type: String,
+      required: true,
+    },
+    phone: {
+      type: String,
+      required: true,
+    },
+    address: {
+      type: String,
+      required: true,
+    },
+    role: {
+      type: String,
+      enum: ["user", "admin"],
+      default: "user",
+    },
   },
   { timestamps: true }
 );
@@ -28,6 +54,7 @@ userSchema.pre("save", async function () {
     const salt = await bcrypt.genSalt(10);
     this.password = await bcrypt.hash(this.password, salt);
   } catch (error) {
+    console.error(error);
     throw error;
   }
 });
