@@ -12,7 +12,7 @@ import {
   loginValidator,
   registerValidator,
 } from "../validators/userValidators";
-import { isAdmin, protect } from "../middlewares/authMiddleware";
+import { protect } from "../middlewares/authMiddleware";
 import { validateRequest } from "../middlewares/validateRequest";
 
 const router = express.Router();
@@ -21,6 +21,6 @@ router.post("/register", registerValidator, validateRequest, register);
 router.post("/login", loginValidator, validateRequest, login);
 router.post("/logout", logout);
 
-router.get("/profile", protect, isAdmin, getUserInfo);
+router.get("/get-user-info", protect, getUserInfo);
 
 export default router;

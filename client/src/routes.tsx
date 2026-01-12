@@ -7,6 +7,10 @@ import Policy from "./pages/Policy";
 import PageNotFound from "./pages/PageNotFound";
 import RegisterForm from "./pages/auth/RegisterForm";
 import LoginForm from "./pages/auth/LoginForm";
+import Dashboard from "./pages/user/Dashboard";
+import IsLogin from "./pages/protector/IsLogin";
+import IsAdmin from "./pages/protector/isAdmin";
+import AdminDashboard from "./pages/admin/AdminDashboard";
 
 export const router = createBrowserRouter([
   {
@@ -37,6 +41,26 @@ export const router = createBrowserRouter([
       {
         path: "login",
         element: <LoginForm />,
+      },
+      {
+        path: "/dashboard/user",
+        element: <IsLogin />,
+        children: [
+          {
+            index: true,
+            element: <Dashboard />,
+          },
+        ],
+      },
+      {
+        path: "/dashboard/admin",
+        element: <IsAdmin />,
+        children: [
+          {
+            index: true,
+            element: <AdminDashboard />,
+          },
+        ],
       },
     ],
   },

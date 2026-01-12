@@ -91,7 +91,7 @@ const Header = () => {
             ) : (
               <>
                 <NavLink
-                  to="/categories"
+                  to="/dashboard"
                   className={navLinkClass}
                   onClick={() => setOpen(false)}
                 >
@@ -166,7 +166,7 @@ const Header = () => {
             ) : (
               <>
                 <NavLink
-                  to="/categories"
+                  to="/dashboard"
                   className={navLinkClass}
                   onClick={() => setOpen(false)}
                 >
