@@ -11,6 +11,11 @@ interface RegisterInput extends LoginInput {
   address: string;
 }
 
+interface ForgotPasswordInput {
+  email: string;
+  newPassword: string;
+}
+
 export const authApiSlice = apiSlice.injectEndpoints({
   endpoints: (builder) => ({
     register: builder.mutation({
@@ -42,6 +47,13 @@ export const authApiSlice = apiSlice.injectEndpoints({
       query: () => "/user/get-user-info",
       providesTags: ["User"],
     }),
+    forgotPassword: builder.mutation({
+      query: (data: ForgotPasswordInput) => ({
+        url: "/user/forgot-password",
+        method: "POST",
+        body: data,
+      }),
+    }),
   }),
 });
 
@@ -50,4 +62,5 @@ export const {
   useLoginMutation,
   useLogoutMutation,
   useCurrentUserQuery,
+  useForgotPasswordMutation,
 } = authApiSlice;

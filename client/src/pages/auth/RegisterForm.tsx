@@ -34,6 +34,7 @@ const RegisterForm = () => {
       password: "",
       phone: "",
       address: "",
+      answer: "",
     },
   });
 
@@ -138,6 +139,21 @@ const RegisterForm = () => {
                   <FormLabel>Address</FormLabel>
                   <FormControl>
                     <Input placeholder="Enter Your Address" {...field} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+
+            {/* Answer */}
+            <FormField
+              control={form.control}
+              name="answer"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Answer</FormLabel>
+                  <FormControl>
+                    <Input placeholder="What is Your Favorite sports" {...field} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>

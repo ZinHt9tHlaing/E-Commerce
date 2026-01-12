@@ -2,13 +2,16 @@
 import express from "express";
 
 import {
+  forgotPassword,
   getUserInfo,
   login,
   logout,
   register,
+  sendForgotPasswordEmail,
 } from "../controller/userController";
 
 import {
+  forgotPasswordValidator,
   loginValidator,
   registerValidator,
 } from "../validators/userValidators";
@@ -20,6 +23,14 @@ const router = express.Router();
 router.post("/register", registerValidator, validateRequest, register);
 router.post("/login", loginValidator, validateRequest, login);
 router.post("/logout", logout);
+
+router.post("/send-forgot-password", sendForgotPasswordEmail);
+router.post(
+  "/forgot-password",
+  forgotPasswordValidator,
+  validateRequest,
+  forgotPassword
+);
 
 router.get("/get-user-info", protect, getUserInfo);
 

@@ -87,3 +87,37 @@ export const getUserInfo = async (
 
   res.status(200).json(userDoc);
 };
+
+export const sendForgotPasswordEmail = async (
+  req: CustomRequest,
+  res: Response,
+  next: NextFunction
+) => {
+  const { email } = req.body;
+
+  const userDoc = await User.findOne({ email });
+
+  if (!userDoc) {
+    return next(createError("Wrong Email or Answer", 404, errorCode.NotFound));
+  }
+
+  res.status(200).json({ message: "Email sent successfully" });
+};
+
+export const forgotPassword = async (
+  req: CustomRequest,
+  res: Response,
+  next: NextFunction
+) => {
+  const { email, newPassword } = req.body;
+
+  const userDoc = await User.findOne({ email });
+
+  if (!userDoc) {
+    return next(createError("User not found", 404, errorCode.NotFound));
+  }
+
+  userDoc.password = newPassword;
+  await userDoc.save();
+  res.status(200).json({ message: "Password changed successfully" });
+};

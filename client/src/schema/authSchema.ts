@@ -11,9 +11,15 @@ export const registerSchema = z.object({
     .min(5, "Invalid phone number")
     .max(12, "Invalid phone number"),
   address: z.string().min(1, "Address is required"),
+  answer: z.string().min(1, "Answer is required"),
 });
 
 export const loginSchema = z.object({
   email: z.email("Valid email is required"),
   password: z.string().min(6, "Password must be at least 6 characters"),
+});
+
+export const forgotPasswordSchema = z.object({
+  email: z.email({ message: "Please enter a valid email!" }),
+  newPassword: z.string().min(6, "Password must be at least 6 characters"),
 });

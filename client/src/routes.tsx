@@ -11,6 +11,7 @@ import Dashboard from "./pages/user/Dashboard";
 import IsLogin from "./pages/protector/IsLogin";
 import IsAdmin from "./pages/protector/isAdmin";
 import AdminDashboard from "./pages/admin/AdminDashboard";
+import ForgotPassword from "./pages/auth/ForgotPassword";
 
 export const router = createBrowserRouter([
   {
@@ -35,14 +36,6 @@ export const router = createBrowserRouter([
         element: <Policy />,
       },
       {
-        path: "register",
-        element: <RegisterForm />,
-      },
-      {
-        path: "login",
-        element: <LoginForm />,
-      },
-      {
         path: "/dashboard/user",
         element: <IsLogin />,
         children: [
@@ -61,6 +54,18 @@ export const router = createBrowserRouter([
             element: <AdminDashboard />,
           },
         ],
+      },
+      {
+        path: "register",
+        element: <RegisterForm />,
+      },
+      {
+        path: "login",
+        element: <LoginForm />,
+      },
+      {
+        path: "forgot-password",
+        element: <ForgotPassword />,
       },
     ],
   },

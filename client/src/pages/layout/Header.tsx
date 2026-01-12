@@ -1,15 +1,23 @@
 import { useState } from "react";
 import { NavLink, Link } from "react-router";
-import { ShoppingCart, Menu, X } from "lucide-react";
-import { Badge } from "@/components/ui/badge";
+import { ShoppingCart, Menu, X, LogOut, User } from "lucide-react";
 import { useLogoutMutation } from "@/store/slices/api/userApi";
 import { toast } from "sonner";
 import { clearUserInfo } from "@/store/slices/auth/auth";
 import { useDispatch, useSelector } from "react-redux";
 import type { AppDispatch, RootState } from "@/store/store";
 
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+
 const Header = () => {
-  const [logoutMutation] = useLogoutMutation();
+  const [logoutMutation, { isLoading }] = useLogoutMutation();
   const dispatch = useDispatch<AppDispatch>();
   const userInfo = useSelector((state: RootState) => state.auth.userInfo);
 
@@ -90,21 +98,39 @@ const Header = () => {
               </>
             ) : (
               <>
-                <NavLink
-                  to="/dashboard"
-                  className={navLinkClass}
-                  onClick={() => setOpen(false)}
-                >
-                  Dashboard
-                </NavLink>
+                <DropdownMenu>
+                  <DropdownMenuTrigger>User</DropdownMenuTrigger>
+                  <DropdownMenuContent>
+                    <DropdownMenuLabel className="font-semibold text-center">
+                      My Account
+                    </DropdownMenuLabel>
+                    <DropdownMenuSeparator />
+                    <DropdownMenuItem className="group" asChild>
+                      <Link to={"/dashboard"} className="cursor-pointer">
+                        <User
+                          className="mr-2 size-4 transition-all duration-300 ease-in-out group-hover:scale-110"
+                          aria-hidden="true"
+                        />
+                        Dashboard
+                      </Link>
+                    </DropdownMenuItem>
 
-                <NavLink
-                  to="/login"
-                  className="px-3 py-2 text-red-500 hover:text-red-600 duration-150"
-                  onClick={logoutHandler}
-                >
-                  Logout
-                </NavLink>
+                    <DropdownMenuItem
+                      disabled={isLoading}
+                      className="group"
+                      onClick={logoutHandler}
+                      asChild
+                    >
+                      <Link to="/login" className="text-red-600 cursor-pointer">
+                        <LogOut
+                          className="mr-2 size-4 text-red-600 transition-all duration-300 group-hover:translate-x-1 group-hover:scale-95"
+                          aria-hidden="true"
+                        />
+                        Logout
+                      </Link>
+                    </DropdownMenuItem>
+                  </DropdownMenuContent>
+                </DropdownMenu>
               </>
             )}
 
@@ -128,7 +154,7 @@ const Header = () => {
       {/* Mobile Menu */}
       {open && (
         <div className="md:hidden border-t bg-white px-4 pb-4">
-          <div className="flex flex-col gap-1">
+          <div className="flex flex-col justify-center items-center gap-1 mt-3">
             <NavLink
               to="/"
               className={navLinkClass}
@@ -165,21 +191,43 @@ const Header = () => {
               </>
             ) : (
               <>
-                <NavLink
-                  to="/dashboard"
-                  className={navLinkClass}
-                  onClick={() => setOpen(false)}
-                >
-                  Dashboard
-                </NavLink>
+                <DropdownMenu>
+                  <DropdownMenuTrigger
+                    className={`${navLinkClass} cursor-pointer`}
+                  >
+                    User
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent>
+                    <DropdownMenuLabel className="font-semibold text-center">
+                      My Account
+                    </DropdownMenuLabel>
+                    <DropdownMenuSeparator />
+                    <DropdownMenuItem className="group" asChild>
+                      <Link to={"/dashboard"} className="cursor-pointer">
+                        <User
+                          className="mr-2 size-4 transition-all duration-300 ease-in-out group-hover:scale-110"
+                          aria-hidden="true"
+                        />
+                        Dashboard
+                      </Link>
+                    </DropdownMenuItem>
 
-                <Link
-                  to={"/login"}
-                  className="px-3 py-2 cursor-pointer text-red-500 hover:text-red-600 duration-150"
-                  onClick={logoutHandler}
-                >
-                  Logout
-                </Link>
+                    <DropdownMenuItem
+                      disabled={isLoading}
+                      className="group"
+                      onClick={logoutHandler}
+                      asChild
+                    >
+                      <Link to="/login" className="text-red-600 cursor-pointer">
+                        <LogOut
+                          className="mr-2 size-4 text-red-600 transition-all duration-200 group-hover:translate-x-1 group-hover:text-red-500 group-hover:scale-95"
+                          aria-hidden="true"
+                        />
+                        Logout
+                      </Link>
+                    </DropdownMenuItem>
+                  </DropdownMenuContent>
+                </DropdownMenu>
               </>
             )}
 

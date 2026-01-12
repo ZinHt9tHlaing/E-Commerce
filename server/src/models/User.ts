@@ -41,6 +41,10 @@ const userSchema = new mongoose.Schema<IUser>(
       enum: ["user", "admin"],
       default: "user",
     },
+    answer: {
+      type: String,
+      required: true,
+    },
   },
   { timestamps: true }
 );
