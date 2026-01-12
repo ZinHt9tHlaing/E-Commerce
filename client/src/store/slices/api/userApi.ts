@@ -16,6 +16,17 @@ interface ForgotPasswordInput {
   newPassword: string;
 }
 
+interface UserTypes {
+  _id: string;
+  name: string;
+  email: string;
+  password: string;
+  phone: string;
+  address: string;
+  answer: string;
+  role: "user" | "admin";
+}
+
 export const authApiSlice = apiSlice.injectEndpoints({
   endpoints: (builder) => ({
     register: builder.mutation({
@@ -43,7 +54,7 @@ export const authApiSlice = apiSlice.injectEndpoints({
       }),
       invalidatesTags: ["User"],
     }),
-    currentUser: builder.query({
+    currentUser: builder.query<UserTypes, void>({
       query: () => "/user/get-user-info",
       providesTags: ["User"],
     }),

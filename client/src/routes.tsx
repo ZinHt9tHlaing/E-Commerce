@@ -12,6 +12,11 @@ import IsLogin from "./pages/protector/IsLogin";
 import IsAdmin from "./pages/protector/isAdmin";
 import AdminDashboard from "./pages/admin/AdminDashboard";
 import ForgotPassword from "./pages/auth/ForgotPassword";
+import CreateCategory from "./pages/admin/CreateCategory";
+import Users from "./pages/admin/Users";
+import CreateProduct from "./pages/admin/CreateProduct";
+import Orders from "./pages/user/Orders";
+import Profile from "./pages/user/Profile";
 
 export const router = createBrowserRouter([
   {
@@ -35,6 +40,7 @@ export const router = createBrowserRouter([
         path: "/policy",
         element: <Policy />,
       },
+      // user
       {
         path: "/dashboard/user",
         element: <IsLogin />,
@@ -43,8 +49,17 @@ export const router = createBrowserRouter([
             index: true,
             element: <Dashboard />,
           },
+          {
+            path: "profile",
+            element: <Profile />,
+          },
+          {
+            path: "orders",
+            element: <Orders />,
+          },
         ],
       },
+      // admin
       {
         path: "/dashboard/admin",
         element: <IsAdmin />,
@@ -52,6 +67,18 @@ export const router = createBrowserRouter([
           {
             index: true,
             element: <AdminDashboard />,
+          },
+          {
+            path: "users",
+            element: <Users />,
+          },
+          {
+            path: "create-category",
+            element: <CreateCategory />,
+          },
+          {
+            path: "create-product",
+            element: <CreateProduct />,
           },
         ],
       },

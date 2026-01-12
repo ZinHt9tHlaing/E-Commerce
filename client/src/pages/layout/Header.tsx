@@ -1,7 +1,10 @@
 import { useState } from "react";
 import { NavLink, Link } from "react-router";
-import { ShoppingCart, Menu, X, LogOut, User } from "lucide-react";
-import { useLogoutMutation } from "@/store/slices/api/userApi";
+import { ShoppingCart, Menu, X, LogOut, User, ChevronDown } from "lucide-react";
+import {
+  useCurrentUserQuery,
+  useLogoutMutation,
+} from "@/store/slices/api/userApi";
 import { toast } from "sonner";
 import { clearUserInfo } from "@/store/slices/auth/auth";
 import { useDispatch, useSelector } from "react-redux";
@@ -20,6 +23,7 @@ const Header = () => {
   const [logoutMutation, { isLoading }] = useLogoutMutation();
   const dispatch = useDispatch<AppDispatch>();
   const userInfo = useSelector((state: RootState) => state.auth.userInfo);
+  const { data: user } = useCurrentUserQuery();
 
   const [open, setOpen] = useState(false);
   const [dropdown, setDropdown] = useState(false);
@@ -99,14 +103,25 @@ const Header = () => {
             ) : (
               <>
                 <DropdownMenu>
-                  <DropdownMenuTrigger>User</DropdownMenuTrigger>
+                  <DropdownMenuTrigger>
+                    {" "}
+                    <div className="flex items-center">
+                      <User className="w-5 h-5" />
+                      <ChevronDown className="w-4 h-4 transition-transform duration-300 group-data-[state=open]:rotate-180" />
+                    </div>
+                  </DropdownMenuTrigger>
                   <DropdownMenuContent>
                     <DropdownMenuLabel className="font-semibold text-center">
                       My Account
                     </DropdownMenuLabel>
                     <DropdownMenuSeparator />
                     <DropdownMenuItem className="group" asChild>
-                      <Link to={"/dashboard"} className="cursor-pointer">
+                      <Link
+                        to={`/dashboard/${
+                          user?.role === "admin" ? "admin" : "user"
+                        }`}
+                        className="cursor-pointer"
+                      >
                         <User
                           className="mr-2 size-4 transition-all duration-300 ease-in-out group-hover:scale-110"
                           aria-hidden="true"
@@ -195,7 +210,10 @@ const Header = () => {
                   <DropdownMenuTrigger
                     className={`${navLinkClass} cursor-pointer`}
                   >
-                    User
+                    <div className="flex items-center gap-0">
+                      <User className="w-5 h-5" />
+                      <ChevronDown className="w-4 h-4 transition-transform duration-300 group-data-[state=open]:rotate-180" />
+                    </div>
                   </DropdownMenuTrigger>
                   <DropdownMenuContent>
                     <DropdownMenuLabel className="font-semibold text-center">
@@ -203,7 +221,12 @@ const Header = () => {
                     </DropdownMenuLabel>
                     <DropdownMenuSeparator />
                     <DropdownMenuItem className="group" asChild>
-                      <Link to={"/dashboard"} className="cursor-pointer">
+                      <Link
+                        to={`/dashboard/${
+                          user?.role === "admin" ? "admin" : "user"
+                        }`}
+                        className="cursor-pointer"
+                      >
                         <User
                           className="mr-2 size-4 transition-all duration-300 ease-in-out group-hover:scale-110"
                           aria-hidden="true"
