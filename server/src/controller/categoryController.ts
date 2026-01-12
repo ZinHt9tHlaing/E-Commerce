@@ -61,12 +61,16 @@ export const updateCategory = asyncHandler(
 // get all cat
 export const getAllCategory = asyncHandler(
   async (req: Request, res: Response) => {
-    const category = await Category.find({});
+    const [categories, totalCategory] = await Promise.all([
+      Category.find({}),
+      Category.countDocuments(),
+    ]);
 
     res.status(200).json({
       success: true,
       message: "All Categories List",
-      category,
+      totalCategory,
+      categories,
     });
   }
 );
