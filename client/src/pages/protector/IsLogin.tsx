@@ -8,7 +8,7 @@ import { Outlet, useNavigate } from "react-router";
 const IsLogin = () => {
   const navigate = useNavigate();
   const userInfo = useSelector((state: RootState) => state.auth.userInfo);
-  const { isError } = useCurrentUserQuery({});
+  const { isError } = useCurrentUserQuery();
   const dispatch = useDispatch<AppDispatch>();
 
   useEffect(() => {

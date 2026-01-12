@@ -10,6 +10,7 @@ import "dotenv/config";
 // routes imports
 import userRoute from "./routes/userRoute";
 import productRoute from "./routes/productRoute";
+import categoryRoute from "./routes/categoryRoute";
 
 export const app: Application = express();
 
@@ -30,8 +31,9 @@ app
   .use(compression());
 
 // routes
-app.use("/api/user", userRoute);
-app.use("/api/product", productRoute);
+app.use("/api/v1/user", userRoute);
+app.use("/api/v1/product", productRoute);
+app.use("/api/v1/category", categoryRoute);
 
 app.use((error: any, req: Request, res: Response, next: NextFunction) => {
   const status = error.status || 500;

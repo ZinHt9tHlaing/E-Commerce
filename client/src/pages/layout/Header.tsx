@@ -29,7 +29,7 @@ const Header = () => {
   const [dropdown, setDropdown] = useState(false);
 
   const navLinkClass = ({ isActive }: { isActive: boolean }) =>
-    `px-3 py-2 rounded-md text-sm font-medium transition ${
+    `px-3 py-2 rounded-md text-2xl font-medium transition ${
       isActive
         ? "text-blue-600 bg-blue-50"
         : "text-gray-700 hover:text-blue-600 hover:bg-gray-100"
@@ -211,12 +211,12 @@ const Header = () => {
                     className={`${navLinkClass} cursor-pointer`}
                   >
                     <div className="flex items-center gap-0">
-                      <User className="w-5 h-5" />
+                      <User className="size-7" />
                       <ChevronDown className="w-4 h-4 transition-transform duration-300 group-data-[state=open]:rotate-180" />
                     </div>
                   </DropdownMenuTrigger>
                   <DropdownMenuContent>
-                    <DropdownMenuLabel className="font-semibold text-center">
+                    <DropdownMenuLabel className="text-lg font-semibold text-center">
                       My Account
                     </DropdownMenuLabel>
                     <DropdownMenuSeparator />
@@ -256,7 +256,7 @@ const Header = () => {
 
             <NavLink to="/cart" className={navLinkClass}>
               <div className="relative flex items-center gap-1">
-                <ShoppingCart size={18} />
+                <ShoppingCart className="size-7" />
                 <span className="absolute -top-2 -right-2 rounded-full bg-red-500 px-1.5 text-xs text-white">
                   0
                 </span>
