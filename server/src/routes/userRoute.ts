@@ -1,7 +1,12 @@
 // src/routes/auth.ts
 import express from "express";
 
-import { getUserInfo, login, register } from "../controller/userController";
+import {
+  getUserInfo,
+  login,
+  logout,
+  register,
+} from "../controller/userController";
 
 import {
   loginValidator,
@@ -14,6 +19,7 @@ const router = express.Router();
 
 router.post("/register", registerValidator, validateRequest, register);
 router.post("/login", loginValidator, validateRequest, login);
+router.post("/logout", logout);
 
 router.get("/profile", protect, isAdmin, getUserInfo);
 

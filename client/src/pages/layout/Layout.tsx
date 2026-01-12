@@ -21,7 +21,7 @@ const Layout = ({ title, description, keywords, author }: Props) => {
         <title>{title}</title>
       </Helmet>
       <Header />
-      <main className="mt-5 flex-1 md:px-0 lg:px-20">
+      <main className="mt-5 flex-1 px-4 lg:px-36">
         <Outlet />
       </main>
       <Footer />
