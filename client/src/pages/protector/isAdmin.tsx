@@ -18,7 +18,7 @@ const IsAdmin = () => {
     }
 
     if (user?.role !== "admin") navigate("/");
-  }, [userInfo, isError, user, navigate]);
+  }, [userInfo, isError, user, navigate, isLoading]);
 
   if (isLoading) {
     return <Spinner redirectTo="/login" seconds={3} />;

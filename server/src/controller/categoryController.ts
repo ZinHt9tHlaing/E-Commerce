@@ -62,7 +62,7 @@ export const updateCategory = asyncHandler(
 export const getAllCategory = asyncHandler(
   async (req: Request, res: Response) => {
     const [categories, totalCategory] = await Promise.all([
-      Category.find({}),
+      Category.find({}).sort({ createdAt: -1 }),
       Category.countDocuments(),
     ]);
 

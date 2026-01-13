@@ -69,16 +69,16 @@ export const router = createBrowserRouter([
             element: <AdminDashboard />,
           },
           {
-            path: "users",
-            element: <Users />,
-          },
-          {
             path: "create-category",
             element: <CreateCategory />,
           },
           {
             path: "create-product",
             element: <CreateProduct />,
+          },
+          {
+            path: "users",
+            element: <Users />,
           },
         ],
       },
