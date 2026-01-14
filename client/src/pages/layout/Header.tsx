@@ -104,9 +104,12 @@ const Header = () => {
               <>
                 <DropdownMenu>
                   <DropdownMenuTrigger>
-                    {" "}
                     <div className="flex items-center">
-                      <User className="w-5 h-5" />
+                      {user?.role === "admin" ? (
+                        <span className="font-semibold">Admin</span>
+                      ) : (
+                        <span className="font-semibold">User</span>
+                      )}
                       <ChevronDown className="w-4 h-4 transition-transform duration-300 group-data-[state=open]:rotate-180" />
                     </div>
                   </DropdownMenuTrigger>
@@ -211,7 +214,11 @@ const Header = () => {
                     className={`${navLinkClass} cursor-pointer`}
                   >
                     <div className="flex items-center gap-0">
-                      <User className="size-7" />
+                      {user?.role === "admin" ? (
+                        <span className="font-semibold">Admin</span>
+                      ) : (
+                        <span className="font-semibold">User</span>
+                      )}
                       <ChevronDown className="w-4 h-4 transition-transform duration-300 group-data-[state=open]:rotate-180" />
                     </div>
                   </DropdownMenuTrigger>

@@ -1,7 +1,7 @@
 import { loginSchema } from "@/schema/authSchema";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
-import { Link, useLocation, useNavigate } from "react-router";
+import { Link, useNavigate } from "react-router";
 import type z from "zod";
 
 import { Button } from "@/components/ui/button";
