@@ -2,10 +2,54 @@ import AdminMenu from "@/components/admin/AdminMenu";
 import CategoryForm from "@/components/admin/form/CategoryForm";
 import CategoryTableSkeleton from "@/components/CategoryTableSkeleton";
 import { Button } from "@/components/ui/button";
-import { useGetAllCategoriesQuery } from "@/store/slices/api/categoryApi";
+import { Input } from "@/components/ui/input";
+import {
+  useDeleteCategoryMutation,
+  useGetAllCategoriesQuery,
+  useUpdateCategoryMutation,
+} from "@/store/slices/api/categoryApi";
+import { useState } from "react";
+import { toast } from "sonner";
 
 const CreateCategory = () => {
-  const { data, isLoading: getAllCategoryLoading } = useGetAllCategoriesQuery();
+  const { data: getAllCategoriesData, isLoading: getAllCategoryLoading } =
+    useGetAllCategoriesQuery();
+  const [updateCategoryMutation, { isLoading: updateCategoryLoading }] =
+    useUpdateCategoryMutation();
+  const [deleteCategoryMutation, { isLoading: deleteCategoryLoading }] =
+    useDeleteCategoryMutation();
+
+  const [editId, setEditId] = useState<string | null>(null);
+  const [editText, setEditText] = useState("");
+
+  const handleUpdate = async (id: string) => {
+    try {
+      const response = await updateCategoryMutation({
+        id,
+        name: editText,
+      }).unwrap();
+      setEditText("");
+      setEditId(null);
+      toast.success(response.message);
+    } catch (error: any) {
+      toast.error(error?.data?.message);
+      console.error("Update category error", error);
+    }
+  };
+
+  const handleDelete = async (id: string) => {
+    try {
+      const response = await deleteCategoryMutation({
+        id,
+      }).unwrap();
+      setEditText("");
+      setEditId(null);
+      toast.success(response.message);
+    } catch (error: any) {
+      toast.error(error?.data?.message);
+      console.error("Delete category error", error);
+    }
+  };
 
   return (
     <AdminMenu>
@@ -39,8 +83,9 @@ const CreateCategory = () => {
 
                 {/* Body */}
                 <tbody className="divide-y overflow-y-scroll">
-                  {data?.categories && data?.categories.length > 0 ? (
-                    data?.categories?.map((category, index) => (
+                  {getAllCategoriesData?.categories &&
+                  getAllCategoriesData?.categories.length > 0 ? (
+                    getAllCategoriesData?.categories?.map((category, index) => (
                       <tr key={category._id}>
                         <td className="px-4 lg:px-6 py-4 text-sm font-medium">
                           {index + 1}
@@ -48,29 +93,78 @@ const CreateCategory = () => {
 
                         {/* Name */}
                         <td className="px-4 lg:px-6 py-3 text-sm">
-                          <span className="font-medium text-gray-800 line-clamp-1 lg:line-clamp-none">
-                            {category.name}
-                          </span>
+                          {editId === category._id ? (
+                            <Input
+                              value={editText}
+                              onChange={(e) => setEditText(e.target.value)}
+                              className="w-full text-sm md:text-base px-2 md:px-3 py-1.5 md:py-2"
+                            />
+                          ) : (
+                            <span className="font-medium text-gray-800">
+                              {category.name}
+                            </span>
+                          )}
                         </td>
 
                         {/* Actions */}
-                        <td className="px-3 lg:px-6 py-3">
-                          <div className="flex gap-2">
-                            <Button
-                              size="sm"
-                              className="active:scale-95 duration-100"
-                            >
-                              Edit
-                            </Button>
-                            <Button
-                              size="sm"
-                              className="active:scale-95 duration-100"
-                              variant="destructive"
-                            >
-                              Delete
-                            </Button>
-                          </div>
-                        </td>
+                        {editId === category._id ? (
+                          <td className="px-3 lg:px-6 py-3">
+                            <div className="flex gap-2">
+                              <Button
+                                size="sm"
+                                className="active:scale-95 duration-100"
+                                disabled={updateCategoryLoading}
+                                onClick={() => handleUpdate(category._id)}
+                              >
+                                {updateCategoryLoading ? (
+                                  <span className="animate-pulse">
+                                    Saving...
+                                  </span>
+                                ) : (
+                                  "Save"
+                                )}
+                              </Button>
+                              <Button
+                                size="sm"
+                                variant="secondary"
+                                onClick={() => setEditId(null)}
+                                className="active:scale-95 duration-100"
+                              >
+                                Cancel
+                              </Button>
+                            </div>
+                          </td>
+                        ) : (
+                          <td className="px-3 lg:px-6 py-3">
+                            <div className="flex gap-2">
+                              <Button
+                                size="sm"
+                                onClick={() => {
+                                  setEditId(category._id);
+                                  setEditText(category.name);
+                                }}
+                                className="active:scale-95 duration-100"
+                              >
+                                Edit
+                              </Button>
+                              <Button
+                                size="sm"
+                                className="active:scale-95 duration-100"
+                                variant="destructive"
+                                disabled={deleteCategoryLoading}
+                                onClick={() => handleDelete(category._id)}
+                              >
+                                {deleteCategoryLoading ? (
+                                  <span className="animate-pulse">
+                                    Deleting...
+                                  </span>
+                                ) : (
+                                  "Delete"
+                                )}
+                              </Button>
+                            </div>
+                          </td>
+                        )}
                       </tr>
                     ))
                   ) : (

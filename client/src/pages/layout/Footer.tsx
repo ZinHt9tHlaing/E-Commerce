@@ -12,13 +12,12 @@ const Footer = () => {
       <h1 className="text-center text-lg">
         All Right Reserved &copy; {date.getFullYear()}
         {" - "}
-        <Link
-          to="/"
+        <button
           onClick={scrollToTop}
           className="underline font-semibold text-yellow-400 hover:text-yellow-500 duration-150"
         >
           E SHOP
-        </Link>
+        </button>
       </h1>
       <div className="text-center mt-3">
         <Link

@@ -16,7 +16,7 @@ const IsLogin = () => {
       navigate("/login");
       dispatch(clearUserInfo());
     }
-  }, [userInfo, isError, dispatch, navigate]);
+  }, [userInfo, isError, navigate]);
 
   return (
     <div>

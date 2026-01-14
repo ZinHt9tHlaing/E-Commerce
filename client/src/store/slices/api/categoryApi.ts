@@ -12,6 +12,17 @@ interface CreateCategoryTypes {
   name: string;
 }
 
+interface updateCategoryTypes {
+  success: boolean;
+  message: string;
+  updatedCategory: GetAllCategoryTypes;
+}
+
+interface deleteCategoryTypes {
+  success: boolean;
+  message: string;
+}
+
 export const categoryApiSlice = apiSlice.injectEndpoints({
   endpoints: (builder) => ({
     getAllCategories: builder.query<GetAllCategoryTypes, void>({
@@ -26,8 +37,32 @@ export const categoryApiSlice = apiSlice.injectEndpoints({
       }),
       invalidatesTags: ["Category"],
     }),
+    updateCategory: builder.mutation<
+      updateCategoryTypes,
+      { id: string; name: string }
+    >({
+      query: (data) => ({
+        url: `/category/update-category/${data.id}`,
+        method: "PATCH",
+        body: {
+          name: data.name,
+        },
+      }),
+      invalidatesTags: ["Category"],
+    }),
+    deleteCategory: builder.mutation<deleteCategoryTypes, { id: string }>({
+      query: (data) => ({
+        url: `/category/delete-category/${data.id}`,
+        method: "DELETE",
+      }),
+      invalidatesTags: ["Category"],
+    }),
   }),
 });
 
-export const { useGetAllCategoriesQuery, useCreateCategoryMutation } =
-  categoryApiSlice;
+export const {
+  useGetAllCategoriesQuery,
+  useCreateCategoryMutation,
+  useUpdateCategoryMutation,
+  useDeleteCategoryMutation,
+} = categoryApiSlice;

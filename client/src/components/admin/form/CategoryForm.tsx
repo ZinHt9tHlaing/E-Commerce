@@ -13,14 +13,12 @@ import { useCreateCategoryMutation } from "@/store/slices/api/categoryApi";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Loader2 } from "lucide-react";
 import { useForm } from "react-hook-form";
-import { useNavigate } from "react-router";
 import { toast } from "sonner";
 import type z from "zod";
 
 const CategoryForm = () => {
   const [createCategoryMutation, { isLoading: createCategoryLoading }] =
     useCreateCategoryMutation();
-  const navigate = useNavigate();
 
   const form = useForm<z.infer<typeof createCategorySchema>>({
     resolver: zodResolver(createCategorySchema),
@@ -36,7 +34,7 @@ const CategoryForm = () => {
       toast.success("User registered successfully.");
     } catch (error: any) {
       toast.error(error?.data?.message);
-      console.error("Register error", error);
+      console.error("Create category error", error);
     }
   }
 

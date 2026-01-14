@@ -41,7 +41,7 @@ const ForgotPassword = () => {
       navigate("/login");
     } catch (error: any) {
       toast.error(error?.data?.message);
-      console.error("Login error", error);
+      console.error("Forgot password error", error);
     }
   };
 
