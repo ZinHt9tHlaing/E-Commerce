@@ -1,6 +1,6 @@
 import z from "zod";
 
-export const createProductSchema = z.object({
+export const productSchema = z.object({
   name: z.string().min(1, "Name is required"),
   description: z.string().min(10, "Description is too short"),
   price: z.number().min(0, { message: "Price must be at least 0" }),
@@ -17,7 +17,7 @@ export const createProductSchema = z.object({
         file: z.instanceof(File).optional(),
         url: z.string(),
         public_alt: z.string().optional(),
-      })
+      }),
     )
     .min(1, "At least one image is required"),
 });

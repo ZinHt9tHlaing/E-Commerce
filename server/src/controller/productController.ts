@@ -62,7 +62,7 @@ export const getAllProducts = asyncHandler(
 
     res.status(200).json({
       success: true,
-      counTTotal: products.length,
+      countTotal: products.length,
       message: "All products fetched successfully",
       products,
     });

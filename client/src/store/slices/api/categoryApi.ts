@@ -1,6 +1,6 @@
 import { apiSlice } from "../apiSlice";
 
-interface GetAllCategoryTypes {
+export interface GetAllCategoryTypes {
   categories: {
     _id: string;
     name: string;

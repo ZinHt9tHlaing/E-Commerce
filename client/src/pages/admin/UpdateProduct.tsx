@@ -1,7 +1,4 @@
 import AdminMenu from "@/components/admin/AdminMenu";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Textarea } from "@/components/ui/textarea";
 import {
   Form,
   FormControl,
@@ -10,6 +7,7 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
+import { Input } from "@/components/ui/input";
 import {
   Select,
   SelectContent,
@@ -17,50 +15,106 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-
-import { zodResolver } from "@hookform/resolvers/zod";
+import { Textarea } from "@/components/ui/textarea";
+import ImageUpload from "./ImageUpload";
+import { Button } from "@/components/ui/button";
 import { useForm, type SubmitHandler } from "react-hook-form";
-
-import { useCreateProductMutation } from "@/store/slices/api/productApi";
-import { useGetAllCategoriesQuery } from "@/store/slices/api/categoryApi";
+import { zodResolver } from "@hookform/resolvers/zod";
 import { productSchema } from "@/schema/product.schema";
 import type z from "zod";
-import { toast } from "sonner";
-import ImageUpload from "./ImageUpload";
+import { useNavigate, useParams } from "react-router";
+import {
+  useGetProductPhotoByIdQuery,
+  useGetSingleProductQuery,
+  useUpdateProductMutation,
+} from "@/store/slices/api/productApi";
+import { useGetAllCategoriesQuery } from "@/store/slices/api/categoryApi";
+import { useEffect } from "react";
 import { Loader2 } from "lucide-react";
-import { useNavigate } from "react-router";
+import { toast } from "sonner";
+
+interface ImgTypes {
+  url: string;
+  public_alt: string;
+}
 
 type formInput = z.infer<typeof productSchema>;
 
-const CreateProduct = () => {
-  const { data } = useGetAllCategoriesQuery();
-  const [createProductMutation, { isLoading: isLoadingCreateProduct }] =
-    useCreateProductMutation();
+const UpdateProduct = () => {
+  const { slug } = useParams();
+  const { data: getAllCategories } = useGetAllCategoriesQuery();
+  const { data: singleProduct } = useGetSingleProductQuery(String(slug));
+
+  const [updateProductMutation, { isLoading: isLoadingUpdateProduct }] =
+    useUpdateProductMutation();
+
   const navigate = useNavigate();
+
+  const {
+    _id: productId,
+    name,
+    description,
+    price,
+    quantity,
+    category,
+    shipping,
+  } = singleProduct?.product || {};
+
+  const { data: singlePhoto } = useGetProductPhotoByIdQuery(productId!);
 
   const form = useForm<formInput>({
     resolver: zodResolver(productSchema),
     defaultValues: {
-      name: "",
-      description: "",
-      price: 0,
-      quantity: 0,
-      category: "",
-      shipping: "false",
-      photo: [],
+      name: name || "",
+      description: description || "",
+      price: price || 0,
+      quantity: quantity || 0,
+      category: category ? category?._id : "",
+      shipping:
+        shipping !== undefined
+          ? (String(shipping) as "true" | "false")
+          : undefined,
+      photo:
+        singlePhoto && singlePhoto?.product
+          ? singlePhoto?.product.map((p) => ({
+              url: p.url,
+              public_alt: p.public_alt!,
+            }))
+          : [],
     },
   });
 
+  useEffect(() => {
+    if (singleProduct?.product) {
+      const p = singleProduct.product;
+
+      const existingPhotos = singlePhoto?.product
+        ? singlePhoto.product.map((img: ImgTypes) => ({
+            url: img.url,
+            public_alt: img.public_alt || "",
+          }))
+        : [];
+
+      form.reset({
+        name: p.name || "",
+        description: p.description || "",
+        price: p.price || 0,
+        quantity: p.quantity || 0,
+        category: p.category?._id || "",
+        shipping: p.shipping ? "true" : "false",
+        photo: existingPhotos,
+      });
+    }
+  }, [singleProduct, singlePhoto, form]);
+
   const onSubmit: SubmitHandler<formInput> = async (values) => {
     const formData = new FormData();
-
     formData.append("name", values.name);
     formData.append("description", values.description);
-    formData.append("price", String(values.price));
-    formData.append("quantity", String(values.quantity));
+    formData.append("price", values.price.toString());
+    formData.append("quantity", values.quantity.toString());
     formData.append("category", values.category);
     formData.append("shipping", values.shipping);
-
     values.photo.forEach((img) => {
       if (img.file) {
         formData.append("photo", img.file as File);
@@ -68,19 +122,22 @@ const CreateProduct = () => {
     });
 
     try {
-      const response = await createProductMutation(formData).unwrap();
+      const response = await updateProductMutation({
+        id: productId!,
+        formData,
+      }).unwrap();
       form.reset();
       navigate("/dashboard/admin/products");
       toast.success(response.message);
     } catch (err: any) {
       toast.error(err?.data?.message);
-      console.error("Product creation failed:", err);
+      console.error("Product update failed:", err);
     }
   };
 
   return (
     <AdminMenu>
-      <h1 className="text-2xl font-semibold mb-6">Create Product</h1>
+      <h1 className="text-2xl font-semibold mb-6">Update Product</h1>
 
       <Form {...form}>
         <form
@@ -163,8 +220,8 @@ const CreateProduct = () => {
               <FormItem>
                 <FormLabel>Category</FormLabel>
                 <Select
+                  value={field.value || ""}
                   onValueChange={field.onChange}
-                  defaultValue={field.value}
                 >
                   <FormControl>
                     <SelectTrigger>
@@ -172,7 +229,7 @@ const CreateProduct = () => {
                     </SelectTrigger>
                   </FormControl>
                   <SelectContent>
-                    {data?.categories.map((cat) => (
+                    {getAllCategories?.categories.map((cat) => (
                       <SelectItem key={cat._id} value={cat._id}>
                         {cat.name}
                       </SelectItem>
@@ -191,7 +248,10 @@ const CreateProduct = () => {
             render={({ field }) => (
               <FormItem>
                 <FormLabel>Shipping</FormLabel>
-                <Select onValueChange={field.onChange}>
+                <Select
+                  value={field.value ?? "false"}
+                  onValueChange={field.onChange}
+                >
                   <FormControl>
                     <SelectTrigger>
                       <SelectValue placeholder="Shipping?" />
@@ -224,16 +284,16 @@ const CreateProduct = () => {
 
           <Button
             type="submit"
-            disabled={isLoadingCreateProduct}
-            className="w-full cursor-pointer rounded-lg active:scale-95 duration-200"
+            disabled={isLoadingUpdateProduct}
+            className="cursor-pointer rounded-lg active:scale-95 duration-200"
           >
-            {isLoadingCreateProduct ? (
+            {isLoadingUpdateProduct ? (
               <>
                 <Loader2 className="animate-spin text-white size-5" />
-                <span className="animate-pulse">Creating...</span>
+                <span className="animate-pulse">Updating...</span>
               </>
             ) : (
-              "Create"
+              "Update"
             )}
           </Button>
         </form>
@@ -242,4 +302,4 @@ const CreateProduct = () => {
   );
 };
 
-export default CreateProduct;
+export default UpdateProduct;

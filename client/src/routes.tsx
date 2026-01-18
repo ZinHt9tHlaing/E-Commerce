@@ -17,6 +17,8 @@ import Users from "./pages/admin/Users";
 import CreateProduct from "./pages/admin/CreateProduct";
 import Orders from "./pages/user/Orders";
 import Profile from "./pages/user/Profile";
+import Products from "./pages/admin/Products";
+import UpdateProduct from "./pages/admin/UpdateProduct";
 
 export const router = createBrowserRouter([
   {
@@ -77,8 +79,16 @@ export const router = createBrowserRouter([
             element: <CreateProduct />,
           },
           {
+            path: "product/:slug",
+            element: <UpdateProduct />,
+          },
+          {
             path: "users",
             element: <Users />,
+          },
+          {
+            path: "products",
+            element: <Products />,
           },
         ],
       },
